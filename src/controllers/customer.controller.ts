@@ -22,4 +22,34 @@ export const CustomerController = {
     const customer = CustomerService.create(request.body);
     response.status(201).json(customer);
   },
+  update(request: Request, response: Response) {
+  const id = Number(request.params.id);
+  const customer = CustomerService.update(id, request.body);
+
+  if (!customer) {
+    return response.status(404).json({ message: "Customer not found" });
+  }
+
+  response.json(customer);
+},
+  destroy(request: Request, response: Response) {
+  const id = Number(request.params.id);
+  const customer = CustomerService.destroy(id);
+
+  if (!customer) {
+    return response.status(404).json({ message: "Customer not found" });
+  }
+
+  response.json({ message: "Customer deleted successfully" });
+},
+delete(request: Request, response: Response) {
+  const id = Number(request.params.id);
+  const customer = CustomerService.destroy(id);
+
+  if (!customer) {
+    return response.status(404).json({ message: "Customer not found" });
+  }
+
+  response.json({ message: "Customer deleted successfully" });
+}
 };

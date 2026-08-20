@@ -13,4 +13,35 @@ export const CustomerService = {
     customers.push(customer);
     return customer;
   },
+  update(id: number, data: Partial<CreateCustomer>): Customer | undefined {
+  const customer = customers.find((customer) => customer.id === id);
+
+  if (!customer) {
+    return undefined;
+  }
+
+  Object.assign(customer, data);
+  return customer;
+},
+  destroy(id: number): Customer | undefined {
+  const customer = customers.find((customer) => customer.id === id);
+
+  if (!customer) {
+    return undefined;
+  }
+
+  customers.splice(customers.indexOf(customer), 1);
+  return customer;
+},
+delete(id: number): Customer | undefined {
+  const customer = customers.find((customer) => customer.id === id);
+
+  if (!customer) {
+    return undefined;
+  }
+
+  customers.splice(customers.indexOf(customer), 1);
+  return customer;  
+},
+
 };
