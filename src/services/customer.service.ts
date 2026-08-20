@@ -1,47 +1,62 @@
+import { NotFoundError } from "../errors/index.ts";
 import { customers } from "../mocks/customer.mock.ts";
-import type { Customer, CreateCustomer } from "../types.ts";
+import type {
+	CreateCustomer,
+	UpdateCustomer,
+} from "../schemas/customer.schema.ts";
+import type { Customer } from "../types.ts";
 
-export const CustomerService = {
-  findAll(): Customer[] {
-    return customers;
-  },
-  findById(id: number): Customer | undefined {
-    return customers.find((customer) => customer.id === id);
-  },
-  create(data: CreateCustomer): Customer {
-    const customer: Customer = { id: customers.length + 1, status: true, ...data };
-    customers.push(customer);
-    return customer;
-  },
-  update(id: number, data: Partial<CreateCustomer>): Customer | undefined {
-  const customer = customers.find((customer) => customer.id === id);
+export function findAllCustomers(): Customer[] {
+	return customers;
+}
 
-  if (!customer) {
-    return undefined;
-  }
+export function findCustomerById(id: number): Customer {
+	const customer = customers.find((customer) => customer.id === id);
 
-  Object.assign(customer, data);
-  return customer;
-},
-  destroy(id: number): Customer | undefined {
-  const customer = customers.find((customer) => customer.id === id);
+	if (!customer) {
+		throw new NotFoundError(`Cliente com id ${id} não encontrado.`);
+	}
 
-  if (!customer) {
-    return undefined;
-  }
+	return customer;
+}
 
-  customers.splice(customers.indexOf(customer), 1);
-  return customer;
-},
-delete(id: number): Customer | undefined {
-  const customer = customers.find((customer) => customer.id === id);
+export function insertCustomer({ name, email }: CreateCustomer): Customer {
+	const id = customers[customers.length - 1].id;
 
-  if (!customer) {
-    return undefined;
-  }
+	const customer: Customer = {
+		id: id + 1,
+		name,
+		email,
+		status: true,
+	};
 
-  customers.splice(customers.indexOf(customer), 1);
-  return customer;  
-},
+	customers.push(customer);
+	return customer;
+}
 
-};
+export function modifyCustomer(
+	id: number,
+	{ name, email, status }: UpdateCustomer,
+): Customer {
+	const customer = customers.find((customer) => customer.id === id);
+
+	if (!customer) {
+		throw new NotFoundError(`Cliente com id ${id} não encontrado.`);
+	}
+
+	if (name) customer.name = name;
+	if (email) customer.email = email;
+	if (status !== undefined) customer.status = status;
+
+	return customer;
+}
+
+export function removeCustomer(id: number): void {
+	const index = customers.findIndex((customer) => customer.id === id);
+
+	if (index === -1) {
+		throw new NotFoundError(`Cliente com id ${id} não encontrado.`);
+	}
+
+	customers.splice(index, 1);
+}

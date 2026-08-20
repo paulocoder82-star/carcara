@@ -1,55 +1,36 @@
 import type { Request, Response } from "express";
-import { CustomerService } from "../services/customer.service.ts";
+import {
+	findAllCustomers,
+	findCustomerById,
+	insertCustomer,
+	modifyCustomer,
+	removeCustomer,
+} from "../services/customer.service.ts";
 
-export const CustomerController = {
-  index(request: Request, response: Response) {
-    const customers = CustomerService.findAll();
-    response.json(customers);
-  },
-
-  show(request: Request, response: Response) {
-    const id = Number(request.params.id);
-    const customer = CustomerService.findById(id);
-
-    if (!customer) {
-      return response.status(404).json({ message: "Customer not found" });
-    }
-
-    response.json(customer);
-  },
-
-  store(request: Request, response: Response) {
-    const customer = CustomerService.create(request.body);
-    response.status(201).json(customer);
-  },
-  update(request: Request, response: Response) {
-  const id = Number(request.params.id);
-  const customer = CustomerService.update(id, request.body);
-
-  if (!customer) {
-    return response.status(404).json({ message: "Customer not found" });
-  }
-
-  response.json(customer);
-},
-  destroy(request: Request, response: Response) {
-  const id = Number(request.params.id);
-  const customer = CustomerService.destroy(id);
-
-  if (!customer) {
-    return response.status(404).json({ message: "Customer not found" });
-  }
-
-  response.json({ message: "Customer deleted successfully" });
-},
-delete(request: Request, response: Response) {
-  const id = Number(request.params.id);
-  const customer = CustomerService.destroy(id);
-
-  if (!customer) {
-    return response.status(404).json({ message: "Customer not found" });
-  }
-
-  response.json({ message: "Customer deleted successfully" });
+export function index(_request: Request, response: Response) {
+	const customers = findAllCustomers();
+	response.json(customers);
 }
-};
+
+export function show(request: Request, response: Response) {
+	const id = Number(request.params.id);
+	const customer = findCustomerById(id);
+	response.json(customer);
+}
+
+export function store(request: Request, response: Response) {
+	const customer = insertCustomer(request.body);
+	response.status(201).json(customer);
+}
+
+export function update(request: Request, response: Response) {
+	const id = Number(request.params.id);
+	const customer = modifyCustomer(id, request.body);
+	response.json(customer);
+}
+
+export function destroy(request: Request, response: Response) {
+	const id = Number(request.params.id);
+	removeCustomer(id);
+	response.status(204).send();
+}
