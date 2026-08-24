@@ -1,0 +1,16 @@
+services:
+  carcara-postgres:
+    image: postgres:17 # Fixar na v17 evita o erro de compatibilidade de volumes da v18
+    container_name: carcara-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-carcara}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
